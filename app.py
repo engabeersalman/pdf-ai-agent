@@ -92,7 +92,7 @@ question = st.text_input(
 
 if st.button("Ask AI"):
 
-    question_webhook_url = "https://abeersalman7979.app.n8n.cloud/webhook/pdf-qustions"
+    question_webhook_url = "https://abeersalman7979.app.n8n.cloud/webhook/pdf-questions"
 
     files = {
         "file": (
