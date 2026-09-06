@@ -84,8 +84,6 @@ if uploaded_file is not None:
                 st.write(e)
                 st.divider()
 
-st.divider()
-
 st.subheader("💬 Ask about this PDF")
 
 question = st.text_input(
