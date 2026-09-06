@@ -101,11 +101,11 @@ if st.button("Ask AI"):
             "application/pdf"
         )
     }
-
+    #this would take the q 
     data = {
         "question": question
     }
-
+    #here would be teh reponse
     response = requests.post(
         question_webhook_url,
         files=files,
