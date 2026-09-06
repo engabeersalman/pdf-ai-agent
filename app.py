@@ -84,6 +84,8 @@ if uploaded_file is not None:
                 st.write(e)
                 st.divider()
 
+st.divider()
+
 st.subheader("💬 Ask about this PDF")
 
 question = st.text_input(
@@ -92,7 +94,7 @@ question = st.text_input(
 
 if st.button("Ask AI"):
 
-    question_webhook_url = "https://abeersalman7979.app.n8n.cloud/webhook-test/pdf-qustions"
+    question_webhook_url = "PUT_QUESTION_WEBHOOK_URL_HERE"
 
     files = {
         "file": (
@@ -101,20 +103,34 @@ if st.button("Ask AI"):
             "application/pdf"
         )
     }
-    #this would take the q 
+
     data = {
         "question": question
     }
-    #here would be teh reponse
-    response = requests.post(
-        question_webhook_url,
-        files=files,
-        data=data
-    )
 
-    st.write("Status Code:", response.status_code)
+    with st.spinner("Thinking..."):
 
-    try:
-        st.json(response.json())
-    except:
-        st.write(response.text)
+        response = requests.post(
+            question_webhook_url,
+            files=files,
+            data=data
+        )
+
+        if response.status_code == 200:
+
+            result = response.json()
+
+            st.success("Answer generated successfully.")
+
+            st.subheader("🤖 Answer")
+
+            st.write(result["answer"])
+
+        else:
+
+            st.error(
+                f"Request failed with status code: "
+                f"{response.status_code}"
+            )
+
+            st.write(response.text)        
