@@ -122,7 +122,7 @@ if st.button("Ask AI"):
 
             st.subheader("🤖 Answer")
 
-            st.write(result["answer"])
+            st.write(result['answer'])
 
         else:
 
