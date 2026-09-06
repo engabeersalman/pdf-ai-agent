@@ -131,4 +131,4 @@ if st.button("Ask AI"):
                 f"{response.status_code}"
             )
 
-            st.write(response.text)        
+            st.write(response.text)
