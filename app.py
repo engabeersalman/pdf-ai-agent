@@ -1,26 +1,31 @@
-#python file. 
 import streamlit as st
 import requests
 
-st.title("PDF AI Assistant") #header name
+st.set_page_config(
+    page_title="PDF AI Assistant",
+    page_icon="📄",
+    layout="centered"
+)
 
-#this is to upload the pdf file
-#type 
+st.title("📄 PDF AI Assistant")
+
+st.write(
+    "Upload a PDF file and let the AI agent analyze and summarize it."
+)
+
 uploaded_file = st.file_uploader(
-    "Upload a PDF file",
+    "Upload PDF",
     type=["pdf"]
 )
 
 if uploaded_file is not None:
 
-    st.success(f"File selected: {uploaded_file.name}")
+    st.success(f"Selected file: {uploaded_file.name}")
 
-    if st.button("Send PDF to n8n"):
+    if st.button("Analyze PDF"):
 
         webhook_url = "https://abeersalman7979.app.n8n.cloud/webhook-test/pdf-agents"
 
-        #this would be preparning the file. 
-        #this one (application/pdf) would tell the n8n that this is the type pf the pdf. 
         files = {
             "file": (
                 uploaded_file.name,
@@ -29,23 +34,51 @@ if uploaded_file is not None:
             )
         }
 
-        #post to send the data and get for gettining the data. 
-        #here we decide where we can send the file 'webhook_url' 
-        #here we save the response from n8n. 
-        #if 200 (response.status_code) this sufffull 
-        #if 400 (response.status_code) this filed ..etc
-        response = requests.post(
-            webhook_url,
-            files=files
-        )
+        with st.spinner("Analyzing PDF..."):
 
-        st.write("Status Code:", response.status_code)
+            try:
 
-        st.write("Response from n8n:") #this is the title from the user 'Response from n8n'
+                response = requests.post(
+                    webhook_url,
+                    files=files
+                )
 
-        #this is we use try becouse we are not sure that this would always give me a json that's why we say this is try. 
-        #if it is not json it would replay with text. 
-        try:
-            st.json(response.json())
-        except:
-            st.write(response.text)
+                if response.status_code == 200:
+
+                    result = response.json()
+
+                    st.success("Analysis completed successfully.")
+
+                    st.divider()
+
+                    st.subheader("📌 Document Title")
+                    st.write(result["title"])
+
+                    st.subheader("📝 Summary")
+                    st.write(result["summary"])
+
+                    st.subheader("🎯 Main Topic")
+                    st.write(result["main_topic"])
+
+                    st.subheader("🔑 Key Points")
+
+                    for i, point in enumerate(
+                        result["key_points"],
+                        start=1
+                    ):
+                        st.write(f"{i}. {point}")
+
+                else:
+
+                    st.error(
+                        f"Request failed with status code: "
+                        f"{response.status_code}"
+                    )
+
+                    st.write(response.text)
+
+            except Exception as e:
+
+                st.error("Something went wrong.")
+
+                st.write(e)
